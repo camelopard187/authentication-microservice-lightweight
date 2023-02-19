@@ -1,0 +1,7 @@
+{
+  "key": {
+    "private": {
+      "path": "config/json-web-token/private.pem"
+    }
+  }
+}

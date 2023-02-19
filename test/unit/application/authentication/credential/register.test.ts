@@ -3,8 +3,10 @@ import { compare } from 'bcryptjs'
 
 import { register } from '../../../../../source/application/authentication/credential/register'
 import { insertCredential } from '../../../../../source/periphery/persistence/repository/credential'
+import { entity } from '../../../periphery/infrastructure/identity'
 
 vi.mock('../../../../../source/periphery/persistence/repository/credential')
+vi.mocked(insertCredential).mockImplementation(entity)
 
 describe.concurrent('Given a unique credential', () => {
   const credential = {
@@ -14,7 +16,7 @@ describe.concurrent('Given a unique credential', () => {
   }
 
   describe('When calling the register function with credential', async () => {
-    await register(credential)
+    const details = await register(credential)
 
     it('Then it should hash the credential password', async () => {
       const hash = vi.mocked(insertCredential).mock.calls[0][0].password
@@ -25,6 +27,13 @@ describe.concurrent('Given a unique credential', () => {
       expect(insertCredential).toHaveBeenCalledWith({
         ...credential,
         password: expect.not.stringContaining(credential.password)
+      })
+    })
+
+    it('Then it should return authentication details', () => {
+      expect(details).toEqual({
+        client: expect.any(String),
+        tokens: { access: expect.any(String), refresh: expect.any(String) }
       })
     })
   })

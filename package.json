@@ -4,6 +4,7 @@
   "description": "Lightweight jwt token-based authentication microservice",
   "repository": "https://github.com/camelopard187/authentication-microservice-lightweight.git",
   "author": "camelopard187 <camelopard187@gmail.com>",
+  "main": "source/main.ts",
   "license": "MIT",
   "scripts": {
     "test-database:up": "docker compose -f test/docker/docker-compose.yaml up -d",

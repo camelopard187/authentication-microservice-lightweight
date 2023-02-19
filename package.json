@@ -5,6 +5,9 @@
   "repository": "https://github.com/camelopard187/authentication-microservice-lightweight.git",
   "author": "camelopard187 <camelopard187@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "test:unit": "yarn vitest run unit"
+  },
   "devDependencies": {
     "@types/node": "^18.14.0",
     "prisma": "^4.10.1",

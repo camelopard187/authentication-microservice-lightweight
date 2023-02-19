@@ -1,5 +1,6 @@
 /node_modules
 /coverage
+*.log*
 
 /config/json-web-token
 *.env*

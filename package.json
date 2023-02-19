@@ -6,6 +6,8 @@
   "author": "camelopard187 <camelopard187@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "test-database:up": "docker compose -f test/docker/docker-compose.yaml up -d",
+    "test:integration": "yarn vitest run integration",
     "test:unit": "yarn vitest run unit"
   },
   "devDependencies": {

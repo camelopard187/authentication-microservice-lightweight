@@ -2,5 +2,7 @@
 /coverage
 *.log*
 
+/config/postgres
 /config/json-web-token
+/config/production*
 *.env*

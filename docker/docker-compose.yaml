@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  postgres:
+    build:
+      context: ../
+      dockerfile: docker/build/postgres.dockerfile 
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    restart: on-failure
+  application:
+    build: 
+      context: ../
+      dockerfile: docker/build/application.dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      DATABASE_URL: postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/$POSTGRES_DB
+    configs:
+      - source: application-configuration
+        target: usr/src/app/config/${NODE_ENV}.json
+    secrets:
+      - rsa-private-key
+      - rsa-public-key
+    depends_on:
+      - postgres
+    restart: on-failure
+
+configs:
+  application-configuration:
+    file: ../config/${NODE_ENV}.json
+
+secrets:
+  rsa-private-key:
+    file: ../config/json-web-token/private.pem
+  rsa-public-key:
+    file: ../config/json-web-token/public.pem

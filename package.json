@@ -7,6 +7,7 @@
   "main": "source/main.ts",
   "license": "MIT",
   "scripts": {
+    "build": "yarn tsc",
     "test-database:up": "docker compose -f test/docker/docker-compose.yaml up -d",
     "test:integration": "yarn vitest run integration",
     "test:unit": "yarn vitest run unit"

@@ -2,6 +2,9 @@
   "key": {
     "private": {
       "path": "config/json-web-token/private.pem"
+    },
+    "public": {
+      "path": "config/json-web-token/public.pem"
     }
   }
 }

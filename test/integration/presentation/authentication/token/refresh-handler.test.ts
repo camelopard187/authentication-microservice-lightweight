@@ -3,6 +3,10 @@ import { afterAll, describe, expect, it } from 'vitest'
 
 import { client } from '../../../../../source/periphery/persistence/database-client'
 import { application } from '../../../../../source/periphery/presentation/application'
+import type {
+  AccessToken,
+  RefreshToken
+} from '../../../../../source/domain/authentication/token/model'
 
 afterAll(async () => {
   await client.credential.deleteMany({})
@@ -24,13 +28,16 @@ describe.concurrent('Given a refresh token', async () => {
     })
 
     it('Then it should return an access token', () => {
-      expect(response.body).toEqual({ access: expect.any(String) })
+      expect(response.body).toEqual<{ access: AccessToken }>({
+        access: expect.any(String) as AccessToken
+      })
     })
   })
 })
 
-describe.concurrent('Given a malformed refresh token', async () => {
-  const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJpYXQiOjE2NzY2NjQ4Mjd9'
+describe.concurrent('Given a malformed refresh token', () => {
+  const token: RefreshToken =
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJpYXQiOjE2NzY2NjQ4Mjd9'
 
   describe('When making a POST request to /v1/refresh', async () => {
     const response = await request(application)
@@ -42,7 +49,7 @@ describe.concurrent('Given a malformed refresh token', async () => {
     })
 
     it('Then it should return a JsonWebTokenError', () => {
-      expect(response.body).toEqual({
+      expect(response.body).toEqual<Error>({
         name: 'JsonWebTokenError',
         message: 'jwt malformed'
       })

@@ -1,4 +1,4 @@
-import type { ErrorRequestHandler } from 'express'
+import type { Request, Response, NextFunction } from 'express'
 
 export const object = (error: Error): Error => ({
   name: error.name,
@@ -6,9 +6,11 @@ export const object = (error: Error): Error => ({
   cause: error.cause ? object(error.cause as Error) : error.cause
 })
 
-export const errorHandler: ErrorRequestHandler = (
-  error,
-  request,
-  response,
-  next
-) => response.status(error.status || 500).json(object(error))
+export const errorHandler = (
+  error: Error & { status: number },
+  _request: Request,
+  response: Response,
+  _next: NextFunction
+): void => {
+  response.status(error.status || 500).json(object(error))
+}

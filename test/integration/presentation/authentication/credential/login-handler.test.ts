@@ -4,6 +4,13 @@ import { afterAll, describe, expect, it } from 'vitest'
 
 import { client } from '../../../../../source/periphery/persistence/database-client'
 import { application } from '../../../../../source/periphery/presentation/application'
+import type { Credential } from '../../../../../source/domain/authentication/credential/model'
+import type { AuthenticationDetails } from '../../../../../source/application/common/authentication/authenticate'
+import type { Entity } from '../../../../../source/application/abstraction/identity'
+import type {
+  AccessToken,
+  RefreshToken
+} from '../../../../../source/domain/authentication/token/model'
 
 afterAll(async () => {
   await client.credential.deleteMany({})
@@ -11,7 +18,7 @@ afterAll(async () => {
 })
 
 describe.concurrent('Given a registered credential', async () => {
-  const credential = {
+  const credential: Credential = {
     name: 'John Doe',
     email: 'john.doe@gmail.com',
     password: 'ynGkUbnFDlac'
@@ -29,15 +36,22 @@ describe.concurrent('Given a registered credential', async () => {
     })
 
     it('Then it should return authentication details', () => {
-      expect(response.body).toEqual({
-        client: expect.any(String),
-        tokens: { access: expect.any(String), refresh: expect.any(String) }
+      expect(response.body).toEqual<AuthenticationDetails>({
+        client: expect.any(String) as Entity<Credential>['id'],
+        tokens: {
+          access: expect.any(String) as AccessToken,
+          refresh: expect.any(String) as RefreshToken
+        }
       })
     })
 
     it('Then it should set the refresh token in cookies', () => {
-      expect(response.header['set-cookie']).toEqual([
-        expect.stringContaining(`refresh-token=${response.body.tokens.refresh}`)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(response.header['set-cookie']).toEqual<[string]>([
+        expect.stringContaining(
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          `refresh-token=${response.body?.tokens?.refresh as string}`
+        ) as string
       ])
     })
   })
@@ -52,18 +66,18 @@ describe.concurrent('Given a registered credential', async () => {
     })
 
     it('Then it should return an Error', () => {
-      expect(response.body).toMatchObject({
+      expect(response.body).toMatchObject<Error>({
         name: 'InvalidCredentialError',
         message: expect.stringContaining(
           'The provided email or password is incorrect'
-        )
+        ) as string
       })
     })
   })
 })
 
 describe.concurrent('Given an unregistered credential', () => {
-  const credential = {
+  const credential: Credential = {
     name: 'Sarah Johnson',
     email: 'sarah.johnson@email.com',
     password: 'hfKopMertLnd'
@@ -79,9 +93,9 @@ describe.concurrent('Given an unregistered credential', () => {
     })
 
     it('Then it should return an Error', () => {
-      expect(response.body).toMatchObject({
+      expect(response.body).toMatchObject<Error>({
         name: 'NotFoundError',
-        message: expect.stringContaining('No Credential found')
+        message: expect.stringContaining('No Credential found') as string
       })
     })
   })

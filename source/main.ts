@@ -3,7 +3,7 @@ import config from 'config'
 import { logger } from './common/logger'
 import { application } from './periphery/presentation/application'
 
-const port = config.get('http.port')
+const port = config.get<number>('http.port')
 
 application
   .listen(port, () => logger.info(`Server listening on port ${port}`))

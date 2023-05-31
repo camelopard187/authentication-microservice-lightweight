@@ -32,7 +32,7 @@ export const decode = (
 export const validate =
   <A extends ZodRawShape>(schema: ZodObject<A>) =>
   (token: JsonWebToken, options: VerifyOptions) =>
-    decode(token, options).then(schema.parseAsync)
+    decode(token, options).then(decoded => schema.parseAsync(decoded))
 
 export const refreshTokenPayload = object({ sub: string().uuid() })
 

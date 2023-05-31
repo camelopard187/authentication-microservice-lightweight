@@ -9,4 +9,4 @@ export const validate =
     schema
       .parseAsync(request.body)
       .then(body => ((request.body = body), next()))
-      .catch(error => response.status(400).json(object(error)))
+      .catch((error: Error) => response.status(400).json(object(error)))

@@ -1,4 +1,5 @@
-import { object, string, infer as inferred } from 'zod'
+import { object, string } from 'zod'
+import type { infer as Infer } from 'zod'
 
 export const name = string()
 
@@ -10,4 +11,4 @@ export const password = string()
 
 export const credential = object({ name, email, password }).required()
 
-export type Credential = inferred<typeof credential>
+export type Credential = Infer<typeof credential>

@@ -52,7 +52,9 @@ describe.concurrent('Given a registered credential', async () => {
     it('Then it should return an Error', () => {
       expect(response.body).toMatchObject({
         name: 'InvalidCredentialError',
-        message: expect.stringContaining('Provided invalid credential')
+        message: expect.stringContaining(
+          'The provided email or password is incorrect'
+        )
       })
     })
   })

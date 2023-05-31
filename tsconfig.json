@@ -1,12 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "lib": ["esnext"],
+    "target": "es2017",
     "module": "commonjs",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+
+    "allowJs": true,
+    "checkJs": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true
+
+    "incremental": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
+
+    "baseUrl": ".",
+    "paths": { "~/*": ["./source/*"] }
   },
-  "include": ["source"],
+  "include": ["**/*.ts", "**/*.cjs", "**/*.mjs"],
   "exclude": ["node_modules"]
 }

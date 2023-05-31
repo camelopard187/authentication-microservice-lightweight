@@ -2,10 +2,10 @@ import { compare } from 'bcryptjs'
 import { BadRequest } from 'http-errors'
 import type { infer as Infer } from 'zod'
 
-import { authenticate } from '../../common/authentication/authenticate'
-import { credential } from '../../../domain/authentication/credential/model'
-import { selectCredential } from '../../../periphery/persistence/repository/credential'
-import type { AuthenticationDetails } from '../../common/authentication/authenticate'
+import { authenticate } from '~/application/common/authentication/authenticate'
+import { credential } from '~/domain/authentication/credential/model'
+import { selectCredential } from '~/periphery/persistence/repository/credential'
+import type { AuthenticationDetails } from '~/application/common/authentication/authenticate'
 
 export class InvalidCredentialError extends BadRequest {
   readonly name = 'InvalidCredentialError'

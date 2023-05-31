@@ -1,8 +1,8 @@
 import type { Prisma } from '@prisma/client'
 
-import { client } from '../database-client'
-import type { Credential } from '../../../domain/authentication/credential/model'
-import type { Entity } from '../../../application/abstraction/identity'
+import { client } from '~/periphery/persistence/database-client'
+import type { Credential } from '~/domain/authentication/credential/model'
+import type { Entity } from '~/application/abstraction/identity'
 
 export const insertCredential = (
   credential: Credential

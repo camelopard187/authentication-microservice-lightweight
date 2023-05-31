@@ -1,19 +1,18 @@
 import { describe, expect, it, vi } from 'vitest'
-import { randomUUID } from 'crypto'
+import { randomUUID } from 'node:crypto'
 
-import { issue } from '../../../../../source/application/common/authentication/authenticate'
-import { refresh } from '../../../../../source/application/authentication/token/refresh'
-import { selectCredential } from '../../../../../source/periphery/persistence/repository/credential'
-import { entity } from '../../../periphery/infrastructure/identity'
+import { issue } from '~/application/common/authentication/authenticate'
+import { refresh } from '~/application/authentication/token/refresh'
 import type {
   AccessToken,
   RefreshToken
-} from '../../../../../source/domain/authentication/token/model'
+} from '~/domain/authentication/token/model'
 
-vi.mock('../../../../../source/periphery/persistence/repository/credential')
-vi.mocked(selectCredential).mockReturnValue(
-  entity({ name: 'n', email: 'e', password: 'p' })
-)
+vi.mock('~/periphery/persistence/repository/credential', () => ({
+  selectCredential: vi
+    .fn()
+    .mockResolvedValue({ id: '0', name: 'n', email: 'e', password: 'p' })
+}))
 
 describe('Given a refresh token', async () => {
   const token: RefreshToken = await issue(

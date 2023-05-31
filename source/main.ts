@@ -1,7 +1,7 @@
 import config from 'config'
 
-import { logger } from './common/logger'
-import { application } from './periphery/presentation/application'
+import { logger } from '~/common/logger'
+import { application } from '~/periphery/presentation/application'
 
 const port = config.get<number>('http.port')
 

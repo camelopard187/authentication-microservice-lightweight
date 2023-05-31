@@ -1,12 +1,12 @@
 import request from 'supertest'
 import { afterAll, describe, expect, it } from 'vitest'
 
-import { client } from '../../../../../source/periphery/persistence/database-client'
-import { application } from '../../../../../source/periphery/presentation/application'
+import { client } from '~/periphery/persistence/database-client'
+import { application } from '~/periphery/presentation/application'
 import type {
   AccessToken,
   RefreshToken
-} from '../../../../../source/domain/authentication/token/model'
+} from '~/domain/authentication/token/model'
 
 afterAll(async () => {
   await client.credential.deleteMany({})

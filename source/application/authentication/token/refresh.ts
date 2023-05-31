@@ -1,22 +1,22 @@
 import config from 'config'
 import { object, string } from 'zod'
-import { readFile } from 'fs/promises'
+import { readFile } from 'node:fs/promises'
 import { verify } from 'jsonwebtoken'
-import { promisify } from 'util'
+import { promisify } from 'node:util'
 import { BadRequest } from 'http-errors'
 import type { VerifyOptions, Secret, JsonWebTokenError } from 'jsonwebtoken'
 import type { ZodObject, ZodRawShape } from 'zod/lib'
 
-import { issueAccessToken } from '../../common/authentication/authenticate'
-import { selectCredential } from '../../../periphery/persistence/repository/credential'
+import { issueAccessToken } from '~/application/common/authentication/authenticate'
+import { selectCredential } from '~/periphery/persistence/repository/credential'
 import type {
   JsonWebToken,
   Payload
-} from '../../common/authentication/authenticate'
+} from '~/application/common/authentication/authenticate'
 import type {
   AccessToken,
   RefreshToken
-} from '../../../domain/authentication/token/model'
+} from '~/domain/authentication/token/model'
 
 export class JsonWebTokenValidateError extends BadRequest {
   readonly name = 'JsonWebTokenValidateError'

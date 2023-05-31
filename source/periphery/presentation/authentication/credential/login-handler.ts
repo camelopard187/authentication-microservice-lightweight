@@ -1,9 +1,9 @@
 import ms from 'ms'
 import type { Request, Response, NextFunction } from 'express'
 
-import { login } from '../../../../application/authentication/credential/login'
-import type { Candidate } from '../../../../application/authentication/credential/login'
-import type { AuthenticationDetails } from '../../../../application/common/authentication/authenticate'
+import { login } from '~/application/authentication/credential/login'
+import type { Candidate } from '~/application/authentication/credential/login'
+import type { AuthenticationDetails } from '~/application/common/authentication/authenticate'
 
 const cookieOptions = { httpOnly: true, maxAge: ms('30d') }
 

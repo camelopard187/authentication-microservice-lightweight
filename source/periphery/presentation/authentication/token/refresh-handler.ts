@@ -1,10 +1,10 @@
 import type { Request, Response, NextFunction } from 'express'
 
-import { refresh } from '../../../../application/authentication/token/refresh'
+import { refresh } from '~/application/authentication/token/refresh'
 import type {
   AccessToken,
   RefreshToken
-} from '../../../../domain/authentication/token/model'
+} from '~/domain/authentication/token/model'
 
 declare module 'express' {
   export interface Request {

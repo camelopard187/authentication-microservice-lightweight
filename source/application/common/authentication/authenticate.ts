@@ -1,17 +1,17 @@
 import config from 'config'
 import { omit } from 'rambda'
-import { readFile } from 'fs/promises'
+import { readFile } from 'node:fs/promises'
 import { sign } from 'jsonwebtoken'
-import { promisify } from 'util'
+import { promisify } from 'node:util'
 import type { SignOptions, Secret } from 'jsonwebtoken'
 
 import type {
   AccessToken,
   RefreshToken,
   TokenPair
-} from '../../../domain/authentication/token/model'
-import type { Credential } from '../../../domain/authentication/credential/model'
-import type { Entity } from '../../abstraction/identity'
+} from '~/domain/authentication/token/model'
+import type { Credential } from '~/domain/authentication/credential/model'
+import type { Entity } from '~/application/abstraction/identity'
 
 export type Payload = object
 export type JsonWebToken = string

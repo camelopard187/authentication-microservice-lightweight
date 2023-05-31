@@ -1,23 +1,21 @@
 import { it, describe, expect, vi } from 'vitest'
 import { compare } from 'bcryptjs'
 
-import { login } from '../../../../../source/application/authentication/credential/login'
-import { selectCredential } from '../../../../../source/periphery/persistence/repository/credential'
-import { entity } from '../../../periphery/infrastructure/identity'
-import type { AuthenticationDetails } from '../../../../../source/application/common/authentication/authenticate'
-import type { Credential } from '../../../../../source/domain/authentication/credential/model'
-import type { Entity } from '../../../../../source/application/abstraction/identity'
+import { login } from '~/application/authentication/credential/login'
+import type { AuthenticationDetails } from '~/application/common/authentication/authenticate'
+import type { Credential } from '~/domain/authentication/credential/model'
+import type { Entity } from '~/application/abstraction/identity'
 import type {
   AccessToken,
   RefreshToken
-} from '../../../../../source/domain/authentication/token/model'
+} from '~/domain/authentication/token/model'
 
 vi.mock('bcryptjs', () => ({ compare: vi.fn().mockResolvedValue(true) }))
-
-vi.mock('../../../../../source/periphery/persistence/repository/credential')
-vi.mocked(selectCredential).mockReturnValue(
-  entity({ name: 'n', email: 'e', password: 'p' })
-)
+vi.mock('~/periphery/persistence/repository/credential', () => ({
+  selectCredential: vi
+    .fn()
+    .mockResolvedValue({ id: '0', name: 'n', email: 'e', password: 'p' })
+}))
 
 describe.concurrent('Given a user credential', () => {
   const credential: Credential = {

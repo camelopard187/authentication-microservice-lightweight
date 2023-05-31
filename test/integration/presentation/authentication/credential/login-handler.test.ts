@@ -2,15 +2,15 @@ import request from 'supertest'
 import { concat, modify } from 'rambda'
 import { afterAll, describe, expect, it } from 'vitest'
 
-import { client } from '../../../../../source/periphery/persistence/database-client'
-import { application } from '../../../../../source/periphery/presentation/application'
-import type { Credential } from '../../../../../source/domain/authentication/credential/model'
-import type { AuthenticationDetails } from '../../../../../source/application/common/authentication/authenticate'
-import type { Entity } from '../../../../../source/application/abstraction/identity'
+import { client } from '~/periphery/persistence/database-client'
+import { application } from '~/periphery/presentation/application'
+import type { Credential } from '~/domain/authentication/credential/model'
+import type { AuthenticationDetails } from '~/application/common/authentication/authenticate'
+import type { Entity } from '~/application/abstraction/identity'
 import type {
   AccessToken,
   RefreshToken
-} from '../../../../../source/domain/authentication/token/model'
+} from '~/domain/authentication/token/model'
 
 afterAll(async () => {
   await client.credential.deleteMany({})

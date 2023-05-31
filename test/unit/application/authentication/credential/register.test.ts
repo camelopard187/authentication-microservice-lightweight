@@ -1,19 +1,21 @@
 import { it, describe, expect, vi } from 'vitest'
 import { compare } from 'bcryptjs'
 
-import { register } from '../../../../../source/application/authentication/credential/register'
-import { insertCredential } from '../../../../../source/periphery/persistence/repository/credential'
-import { entity } from '../../../periphery/infrastructure/identity'
-import type { AuthenticationDetails } from '../../../../../source/application/common/authentication/authenticate'
-import type { Credential } from '../../../../../source/domain/authentication/credential/model'
-import type { Entity } from '../../../../../source/application/abstraction/identity'
+import { register } from '~/application/authentication/credential/register'
+import { insertCredential } from '~/periphery/persistence/repository/credential'
+import type { AuthenticationDetails } from '~/application/common/authentication/authenticate'
+import type { Credential } from '~/domain/authentication/credential/model'
+import type { Entity } from '~/application/abstraction/identity'
 import type {
   AccessToken,
   RefreshToken
-} from '../../../../../source/domain/authentication/token/model'
+} from '~/domain/authentication/token/model'
 
-vi.mock('../../../../../source/periphery/persistence/repository/credential')
-vi.mocked(insertCredential).mockImplementation(entity)
+vi.mock('~/periphery/persistence/repository/credential', () => ({
+  insertCredential: vi.fn(credential =>
+    Promise.resolve({ id: '0', ...credential })
+  )
+}))
 
 describe.concurrent('Given a unique credential', () => {
   const credential: Credential = {

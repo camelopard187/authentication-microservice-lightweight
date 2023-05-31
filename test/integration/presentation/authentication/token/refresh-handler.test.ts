@@ -15,7 +15,9 @@ describe.concurrent('Given a refresh token', async () => {
     .send({ name: 'Mary Smith', email: 'mary@gmail.com', password: 'sKdBsAFb' })
 
   describe('When making a POST request to /v1/refresh', async () => {
-    const response = await request(application).post('/v1/refresh').set('Cookie', previous.get('set-cookie'))
+    const response = await request(application)
+      .post('/v1/refresh')
+      .set('Cookie', previous.get('set-cookie'))
 
     it('Then it should return a 200 status code', () => {
       expect(response.status).toBe(200)

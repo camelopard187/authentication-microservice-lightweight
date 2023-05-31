@@ -8,12 +8,25 @@ import type { ZodObject, ZodRawShape } from 'zod/lib'
 
 import { issueAccessToken } from '../../common/authentication/authenticate'
 import { selectCredential } from '../../../periphery/persistence/repository/credential'
-import type { JsonWebToken, Payload } from '../../common/authentication/authenticate'
-import type { AccessToken, RefreshToken } from '../../../domain/authentication/token/model'
+import type {
+  JsonWebToken,
+  Payload
+} from '../../common/authentication/authenticate'
+import type {
+  AccessToken,
+  RefreshToken
+} from '../../../domain/authentication/token/model'
 
-export const decode = (token: JsonWebToken, options: VerifyOptions): Promise<Payload> =>
+export const decode = (
+  token: JsonWebToken,
+  options: VerifyOptions
+): Promise<Payload> =>
   readFile(config.get('key.public.path'), 'utf8').then(secret =>
-    promisify<JsonWebToken, Secret, VerifyOptions, Payload>(verify)(token, secret, options)
+    promisify<JsonWebToken, Secret, VerifyOptions, Payload>(verify)(
+      token,
+      secret,
+      options
+    )
   )
 
 export const validate =

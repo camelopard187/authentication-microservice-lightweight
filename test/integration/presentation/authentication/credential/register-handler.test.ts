@@ -17,7 +17,9 @@ describe.concurrent('Given a unique credential', () => {
   }
 
   describe('When making a POST request to /v1/register', async () => {
-    const response = await request(application).post('/v1/register').send(credential)
+    const response = await request(application)
+      .post('/v1/register')
+      .send(credential)
 
     it('Then it should return a 200 status code', () => {
       expect(response.status).toBe(200)
@@ -48,7 +50,9 @@ describe.concurrent('Given a duplicate credential object', async () => {
   await request(application).post('/v1/register').send(credential)
 
   describe('When making a POST request to /v1/register', async () => {
-    const response = await request(application).post('/v1/register').send(credential)
+    const response = await request(application)
+      .post('/v1/register')
+      .send(credential)
 
     it('Then it should return a 500 status code', () => {
       expect(response.status).toBe(500)
@@ -57,7 +61,9 @@ describe.concurrent('Given a duplicate credential object', async () => {
     it('Then it should return an Error', () => {
       expect(response.body).toMatchObject({
         name: 'Error',
-        message: expect.stringContaining('Unique constraint failed on the fields')
+        message: expect.stringContaining(
+          'Unique constraint failed on the fields'
+        )
       })
     })
   })

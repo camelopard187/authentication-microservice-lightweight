@@ -20,7 +20,9 @@ describe.concurrent('Given a registered credential', async () => {
   await request(application).post('/v1/register').send(credential)
 
   describe('When making a POST request to /v1/login', async () => {
-    const response = await request(application).post('/v1/login').send(credential)
+    const response = await request(application)
+      .post('/v1/login')
+      .send(credential)
 
     it('Then it should return a 200 status code', () => {
       expect(response.status).toBe(200)
@@ -68,7 +70,9 @@ describe.concurrent('Given an unregistered credential', () => {
   }
 
   describe('When making a POST request to /v1/login', async () => {
-    const response = await request(application).post('/v1/login').send(credential)
+    const response = await request(application)
+      .post('/v1/login')
+      .send(credential)
 
     it('Then it should return a 500 status code', () => {
       expect(response.status).toBe(500)

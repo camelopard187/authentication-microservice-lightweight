@@ -8,6 +8,11 @@ import { controller } from './authentication/controller'
 import { errorHandler } from './common/error-handler'
 
 export const application = express()
-  .use(express.json(), cookieParser(), compression(), morgan('combined', { stream }))
+  .use(
+    express.json(),
+    cookieParser(),
+    compression(),
+    morgan('combined', { stream })
+  )
   .use('/v1', controller({ strict: true }))
   .use(errorHandler)

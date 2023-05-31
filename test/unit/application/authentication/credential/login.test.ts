@@ -8,7 +8,9 @@ import { entity } from '../../../periphery/infrastructure/identity'
 vi.mock('bcryptjs', () => ({ compare: vi.fn().mockResolvedValue(true) }))
 
 vi.mock('../../../../../source/periphery/persistence/repository/credential')
-vi.mocked(selectCredential).mockReturnValue(entity({ name: 'n', email: 'e', password: 'p' }))
+vi.mocked(selectCredential).mockReturnValue(
+  entity({ name: 'n', email: 'e', password: 'p' })
+)
 
 describe.concurrent('Given a user credential', () => {
   const credential = {

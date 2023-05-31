@@ -7,7 +7,9 @@ import { selectCredential } from '../../../../../source/periphery/persistence/re
 import { entity } from '../../../periphery/infrastructure/identity'
 
 vi.mock('../../../../../source/periphery/persistence/repository/credential')
-vi.mocked(selectCredential).mockReturnValue(entity({ name: 'n', email: 'e', password: 'p' }))
+vi.mocked(selectCredential).mockReturnValue(
+  entity({ name: 'n', email: 'e', password: 'p' })
+)
 
 describe('Given a refresh token', async () => {
   const token = await issue({ sub: randomUUID() }, { algorithm: 'RS256' })

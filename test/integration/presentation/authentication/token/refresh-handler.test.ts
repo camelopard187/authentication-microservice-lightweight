@@ -44,13 +44,13 @@ describe.concurrent('Given a malformed refresh token', () => {
       .post('/v1/refresh')
       .set('Cookie', [`refresh-token=${token}`])
 
-    it('Then it should return a 500 status code', () => {
-      expect(response.status).toBe(500)
+    it('Then it should return a 400 status code', () => {
+      expect(response.status).toBe(400)
     })
 
-    it('Then it should return a JsonWebTokenError', () => {
+    it('Then it should return a JsonWebTokenValidateError', () => {
       expect(response.body).toEqual<Error>({
-        name: 'JsonWebTokenError',
+        name: 'JsonWebTokenValidateError',
         message: 'jwt malformed'
       })
     })

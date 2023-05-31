@@ -68,13 +68,13 @@ describe.concurrent('Given a duplicate credential object', async () => {
       .post('/v1/register')
       .send(credential)
 
-    it('Then it should return a 500 status code', () => {
-      expect(response.status).toBe(500)
+    it('Then it should return a 400 status code', () => {
+      expect(response.status).toBe(400)
     })
 
-    it('Then it should return an Error', () => {
+    it('Then it should return an DuplicateCredentialError', () => {
       expect(response.body).toMatchObject<Error>({
-        name: 'Error',
+        name: 'DuplicateCredentialError',
         message: expect.stringContaining(
           'Unique constraint failed on the fields'
         ) as string

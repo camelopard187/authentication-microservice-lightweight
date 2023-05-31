@@ -3,7 +3,8 @@ import { object, string } from 'zod'
 import { readFile } from 'fs/promises'
 import { verify } from 'jsonwebtoken'
 import { promisify } from 'util'
-import type { VerifyOptions, Secret } from 'jsonwebtoken'
+import { BadRequest } from 'http-errors'
+import type { VerifyOptions, Secret, JsonWebTokenError } from 'jsonwebtoken'
 import type { ZodObject, ZodRawShape } from 'zod/lib'
 
 import { issueAccessToken } from '../../common/authentication/authenticate'
@@ -17,6 +18,10 @@ import type {
   RefreshToken
 } from '../../../domain/authentication/token/model'
 
+export class JsonWebTokenValidateError extends BadRequest {
+  readonly name = 'JsonWebTokenValidateError'
+}
+
 export const decode = (
   token: JsonWebToken,
   options: VerifyOptions
@@ -26,7 +31,9 @@ export const decode = (
       token,
       secret,
       options
-    )
+    ).catch(({ message }: JsonWebTokenError) => {
+      throw new JsonWebTokenValidateError(message)
+    })
   )
 
 export const validate =

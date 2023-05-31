@@ -88,14 +88,16 @@ describe.concurrent('Given an unregistered credential', () => {
       .post('/v1/login')
       .send(credential)
 
-    it('Then it should return a 500 status code', () => {
-      expect(response.status).toBe(500)
+    it('Then it should return a 400 status code', () => {
+      expect(response.status).toBe(400)
     })
 
-    it('Then it should return an Error', () => {
+    it('Then it should return an InvalidCredentialError', () => {
       expect(response.body).toMatchObject<Error>({
-        name: 'NotFoundError',
-        message: expect.stringContaining('No Credential found') as string
+        name: 'InvalidCredentialError',
+        message: expect.stringContaining(
+          'The provided email or password is incorrect'
+        ) as string
       })
     })
   })

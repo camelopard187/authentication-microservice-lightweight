@@ -1,6 +1,6 @@
 import { compare } from 'bcryptjs'
 import { BadRequest } from 'http-errors'
-import type { infer as Infer } from 'zod'
+import type { z } from 'zod'
 
 import { authenticate } from '~/application/common/authentication/authenticate'
 import { credential } from '~/domain/authentication/credential/model'
@@ -13,7 +13,7 @@ export class InvalidCredentialError extends BadRequest {
 
 export const candidate = credential.pick({ email: true, password: true })
 
-export type Candidate = Infer<typeof candidate>
+export type Candidate = z.infer<typeof candidate>
 
 export const login = async (
   candidate: Candidate

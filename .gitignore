@@ -1,8 +1,5 @@
 /node_modules
 /coverage
-*.log*
 
-/config/postgres
-/config/json-web-token
-/config/production*
+*.log*
 *.env*

@@ -1,10 +1,9 @@
-import config from 'config'
+import jsonwebtoken from 'jsonwebtoken'
 import { omit } from 'rambda'
-import { readFile } from 'node:fs/promises'
-import { sign } from 'jsonwebtoken'
 import { promisify } from 'node:util'
 import type { SignOptions, Secret } from 'jsonwebtoken'
 
+import { env } from '~/common/environment'
 import type {
   AccessToken,
   RefreshToken,
@@ -21,20 +20,15 @@ export type AuthenticationDetails = {
   tokens: TokenPair
 }
 
-export const signP = promisify<
+export const sign = promisify<
   Payload,
   Secret,
   SignOptions | undefined,
   JsonWebToken
->(sign)
+>(jsonwebtoken.sign)
 
-export const issue = (
-  payload: Payload,
-  options?: SignOptions
-): Promise<JsonWebToken> =>
-  readFile(config.get('key.private.path'), 'utf8').then(secret =>
-    signP(payload, secret, options)
-  )
+export const issue = (payload: Payload, options?: SignOptions) =>
+  sign(payload, env.PRIVATE_KEY, options)
 
 export const issueAccessToken = ({
   id,

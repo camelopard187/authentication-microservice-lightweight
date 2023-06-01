@@ -15,26 +15,25 @@ To get started, you'll need to clone this repository using [Git](https://git-scm
 $ git clone https://github.com/camelopard187/authentication-microservice-lightweight.git
 ```
 
-Moreover, you need to generate an [RSA](<https://en.wikipedia.org/wiki/RSA_(cryptosystem)>) private and public keys for the [JWT](https://jwt.io/) signature and validation, respectively. You can do this using [OpenSSL](https://www.openssl.org/)
+Moreover, you need to generate an [RSA](<https://en.wikipedia.org/wiki/RSA_(cryptosystem)>) private key for the [JWT](https://jwt.io/) signature and validation. You can do this using [OpenSSL](https://www.openssl.org/)
 
 ```bash
-# Generate an RSA private key for the JWT signature
-$ openssl genrsa -out config/json-web-token/private.pem 2048
-
-# Generate an RSA public key for the JWT validation
-$ openssl rsa -in config/json-web-token/private.pem \
-  -pubout -out config/json-web-token/public.pem
+# Generate an RSA private key for the JWT signature and validation
+$ echo "PRIVATE_KEY = \"$(openssl genrsa 2048)\"" >> .env
 ```
 
 > **Note** - In many Unix-like operating systems [OpenSSL](https://www.openssl.org/) available by default
 
 ### 💻 Local
 
-To run the microservice locally, you'll need to set the `DATABASE_URL` environment variable to the [URL](https://en.wikipedia.org/wiki/URL) of your local [PostgreSQL](https://www.postgresql.org/) database
+To run the microservice locally, you'll need to set the `DATABASE_URL` and `NODE_ENV` environment variables to the [URL](https://en.wikipedia.org/wiki/URL) of your local [PostgreSQL](https://www.postgresql.org/) database and [Node.js](https://nodejs.org/en) environment, respectively
 
 ```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/authentication
+NODE_ENV = "development"
+DATABASE_URL = "postgresql://username:password@localhost:5432/database_name"
 ```
+
+> **Note** - Please replace the placeholders `"username"`, `"password"`, and `"database_name"` with your preferred values for a personalized experience
 
 Then, install all dependencies with [Yarn](https://yarnpkg.com/) and start the [Express.js](https://expressjs.com/) server
 
@@ -43,29 +42,39 @@ Then, install all dependencies with [Yarn](https://yarnpkg.com/) and start the [
 $ yarn install --frozen-lockfile
 
 # Start the Express.js server
-$ yarn ts-node source/main.ts
+$ yarn start:development
 ```
 
 > **Note** - Microservice comes with [Prisma](https://www.prisma.io/), which requires [Node.js](https://nodejs.org/) at least v14.17.0
 
 ### 🐳 Docker
 
-To run the microservice using [Docker](https://www.docker.com/), you'll need to set the following environment variables
+To run the microservice using [Docker](https://www.docker.com/), you'll need to set up both the database and application containers. Follow these steps to configure the necessary environment variables:
+
+1. Create a [PostgreSQL](https://www.postgresql.org/) database container by configuring the essential environment variables in the `docker/postgres.env` file:
 
 ```env
-POSTGRES_USER=username
-POSTGRES_PASSWORD=password
-POSTGRES_DB=database_name
-NODE_ENV=development
+POSTGRES_USER = "username"
+POSTGRES_PASSWORD = "password"
+POSTGRES_DB = "database_name"
 ```
 
-Then, use [Docker Compose](https://docs.docker.com/compose/) to build and start the container
+> **Note** - Make sure to replace `"username"`, `"password"`, and `"database_name"` with your desired values
+
+2. Configure the application container by adding the following environment variables to the `docker/application.env` file:
+
+```env
+NODE_ENV = "production"
+DATABASE_URL = "postgresql://username:password@localhost:5432/database_name"
+```
+
+> **Note** - Replace `"username"`, `"password"`, and `"database_name"` with the same values you used in the previous step
+
+Once you've made these configurations, you can proceed with running the microservice using [Docker Compose](https://docs.docker.com/compose/)
 
 ```bash
 $ docker compose -f docker/docker-compose.yaml up -d --build
 ```
-
-> **Note** - You don't need to specify the `DATABASE_URL` environment variable because it is determined by the `POSTGRES` variables
 
 ## 🌿 API Reference
 
@@ -133,7 +142,7 @@ $ yarn test:unit
 To run the integration tests, you'll need to set the `DATABASE_URL` environment variable to the [URL](https://en.wikipedia.org/wiki/URL) of your test [PostgreSQL](https://www.postgresql.org/) database
 
 ```env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/auth-integration-test
+DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/auth-integration-test"
 ```
 
 You can either use your existing [PostgreSQL](https://www.postgresql.org/) instance or create a new one using a [Docker Compose](https://docs.docker.com/compose/) [file](test/docker/docker-compose.yaml)

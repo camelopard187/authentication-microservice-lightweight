@@ -14,12 +14,11 @@ vi.mock('bcryptjs', () => ({ compare: vi.fn().mockResolvedValue(true) }))
 vi.mock('~/periphery/persistence/repository/credential', () => ({
   selectCredential: vi
     .fn()
-    .mockResolvedValue({ id: '0', name: 'n', email: 'e', password: 'p' })
+    .mockResolvedValue({ id: '0', email: 'e', password: 'p' })
 }))
 
 describe.concurrent('Given a user credential', () => {
   const credential: Credential = {
-    name: 'Michael Johnson',
     email: 'mjohnson@outlook.com',
     password: 'tjh7vB1WpUzYJtjmg'
   }

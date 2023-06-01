@@ -18,7 +18,6 @@ afterAll(async () => {
 
 describe.concurrent('Given a registered credential', async () => {
   const credential: Credential = {
-    name: 'John Doe',
     email: 'john.doe@gmail.com',
     password: 'ynGkUbnFDlac'
   }
@@ -77,7 +76,6 @@ describe.concurrent('Given a registered credential', async () => {
 
 describe.concurrent('Given an unregistered credential', () => {
   const credential: Credential = {
-    name: 'Sarah Johnson',
     email: 'sarah.johnson@email.com',
     password: 'hfKopMertLnd'
   }

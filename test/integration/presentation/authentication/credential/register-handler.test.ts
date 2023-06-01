@@ -18,7 +18,6 @@ afterAll(async () => {
 
 describe.concurrent('Given a unique credential', () => {
   const credential: Credential = {
-    name: 'Jane Smith',
     email: 'jsmith@outlook.com',
     password: 'sKdFkn34sAfF'
   }
@@ -56,7 +55,6 @@ describe.concurrent('Given a unique credential', () => {
 
 describe.concurrent('Given a duplicate credential object', async () => {
   const credential: Credential = {
-    name: 'Emily Davis',
     email: 'emilydavis@gmail.com',
     password: 'dS3sfgGf8a'
   }

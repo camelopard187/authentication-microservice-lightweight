@@ -19,7 +19,6 @@ vi.mock('~/periphery/persistence/repository/credential', () => ({
 
 describe.concurrent('Given a unique credential', () => {
   const credential: Credential = {
-    name: 'Michael Johnson',
     email: 'mjohnson@outlook.com',
     password: 'tjh7vB1WpUzYJtjmg'
   }

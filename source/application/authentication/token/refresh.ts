@@ -20,7 +20,7 @@ export class JsonWebTokenValidateError extends BadRequest {
   readonly name = 'JsonWebTokenValidateError'
 }
 
-export const refreshTokenPayload = z.object({ sub: z.string().uuid() })
+export const refreshTokenPayload = z.object({ sub: z.string().cuid() })
 
 export type RefreshTokenPayload = z.infer<typeof refreshTokenPayload>
 

@@ -82,13 +82,12 @@ The Authentication Microservice [API](https://en.wikipedia.org/wiki/API) provide
 
 ### 🪪 Register a new user
 
-To register a new user, send a POST request to `/v1/register` with a [JSON](https://www.json.org/) payload that contains the user's `name`, `email`, and `password`
+To register a new user, send a POST request to `/v1/register` with a [JSON](https://www.json.org/) payload that contains the user's `email`, and `password`
 
 ```bash
 $ curl -X POST http://localhost:3000/v1/register \
   -H 'Content-Type: application/json' \
   -d '{
-    "name": "Sarah Kim",
     "email": "sarahkim@gmail.com",
     "password": "F0r3v3rS@r@"
   }'

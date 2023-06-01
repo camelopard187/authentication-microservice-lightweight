@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from 'vitest'
-import { randomUUID } from 'node:crypto'
 
 import { issue } from '~/application/common/authentication/authenticate'
 import { refresh } from '~/application/authentication/token/refresh'
@@ -11,12 +10,12 @@ import type {
 vi.mock('~/periphery/persistence/repository/credential', () => ({
   selectCredential: vi
     .fn()
-    .mockResolvedValue({ id: '0', name: 'n', email: 'e', password: 'p' })
+    .mockResolvedValue({ id: '0', email: 'e', password: 'p' })
 }))
 
 describe('Given a refresh token', async () => {
   const token: RefreshToken = await issue(
-    { sub: randomUUID() },
+    { sub: 'clidg2cr5000008jr9tqy9un2' },
     { algorithm: 'RS256' }
   )
 

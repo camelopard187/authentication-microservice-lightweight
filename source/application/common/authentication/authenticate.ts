@@ -1,5 +1,4 @@
 import jsonwebtoken from 'jsonwebtoken'
-import { omit } from 'rambda'
 import { promisify } from 'node:util'
 import type { SignOptions, Secret } from 'jsonwebtoken'
 
@@ -27,22 +26,19 @@ export const sign = promisify<
   JsonWebToken
 >(jsonwebtoken.sign)
 
-export const issue = (payload: Payload, options?: SignOptions) =>
-  sign(payload, env.PRIVATE_KEY, options)
+export const issue = <T extends JsonWebToken>(
+  payload: Payload,
+  options?: SignOptions
+) => sign(payload, env.PRIVATE_KEY, options) as Promise<T>
 
-export const issueAccessToken = ({
-  id,
-  ...data
-}: Entity<Credential>): Promise<AccessToken> =>
-  issue(
-    { sub: id, data: omit(['password'], data) },
+export const issueAccessToken = ({ id, email }: Entity<Credential>) =>
+  issue<AccessToken>(
+    { sub: id, data: { email } },
     { algorithm: 'RS256', expiresIn: '15m' }
   )
 
-export const issueRefreshToken = ({
-  id
-}: Entity<Credential>): Promise<RefreshToken> =>
-  issue({ sub: id }, { algorithm: 'RS256', expiresIn: '30d' })
+export const issueRefreshToken = ({ id }: Entity<Credential>) =>
+  issue<RefreshToken>({ sub: id }, { algorithm: 'RS256', expiresIn: '30d' })
 
 export const authenticate = async (
   entity: Entity<Credential>

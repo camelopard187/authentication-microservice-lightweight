@@ -1,5 +1,4 @@
 import request from 'supertest'
-import { concat, modify } from 'rambda'
 import { afterAll, describe, expect, it } from 'vitest'
 
 import { client } from '~/periphery/persistence/database-client'
@@ -59,7 +58,7 @@ describe.concurrent('Given a registered credential', async () => {
   describe('When making an invalid POST request to /v1/login', async () => {
     const response = await request(application)
       .post('/v1/login')
-      .send(modify('password', concat('invalid '), credential))
+      .send({ ...credential, password: `invalid ${credential.password}` })
 
     it('Then it should return a 400 status code', () => {
       expect(response.status).toBe(400)

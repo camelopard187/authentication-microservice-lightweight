@@ -3,35 +3,25 @@ name: CI
 on: [push, pull_request]
 
 env:
-  KEY_FILENAME: config/json-web-token
-  KEY_NUMBITS: 2048
+  PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+  DATABASE_URL: ${{ vars.TEST_DATABASE_URL }}
 
 jobs:
   unit-test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x, 18.x]
-
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
 
-      - name: Install Node.js ${{ matrix.node-version }}
+      - name: Install Node.js 18
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
           cache: 'yarn'
 
       - name: Install dependencies
         run: yarn --prefer-offline --frozen-lockfile
-
-      - name: Generate an RSA key pair in ${{ env.KEY_FILENAME }} folder
-        run: |
-          mkdir $KEY_FILENAME
-          openssl genrsa -out $KEY_FILENAME/private.pem $KEY_NUMBITS
-          openssl rsa -in $KEY_FILENAME/private.pem -pubout -out $KEY_FILENAME/public.pem
 
       - name: Unit test
         run: yarn test:unit
@@ -39,21 +29,14 @@ jobs:
   integration-test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x, 18.x]
-
-    env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/auth-integration-test
-
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
 
-      - name: Install Node.js ${{ matrix.node-version }}
+      - name: Install Node.js 18
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
           cache: 'yarn'
 
       - name: Install dependencies
@@ -61,12 +44,6 @@ jobs:
 
       - name: Prepare a test database
         run: yarn test-database:up
-
-      - name: Generate an RSA key pair in ${{ env.KEY_FILENAME }} folder
-        run: |
-          mkdir $KEY_FILENAME
-          openssl genrsa -out $KEY_FILENAME/private.pem $KEY_NUMBITS
-          openssl rsa -in $KEY_FILENAME/private.pem -pubout -out $KEY_FILENAME/public.pem
 
       - name: Integration test
         run: yarn test:integration

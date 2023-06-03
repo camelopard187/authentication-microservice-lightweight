@@ -1,8 +1,23 @@
-import type { RequestHandler } from 'express'
+import type { Request, Response, NextFunction } from 'express'
 
-import { refresh } from '../../../../application/authentication/token/refresh'
+import { refresh } from '~/application/authentication/token/refresh'
+import type {
+  AccessToken,
+  RefreshToken
+} from '~/domain/authentication/token/model'
 
-export const refreshHandler: RequestHandler = (request, response, next) =>
+declare module 'express' {
+  export interface Request {
+    cookies: { 'refresh-token': RefreshToken }
+  }
+}
+
+export const refreshHandler = (
+  request: Request,
+  response: Response<{ access: AccessToken }>,
+  next: NextFunction
+): void => {
   refresh(request.cookies['refresh-token'])
     .then(access => response.json({ access }))
     .catch(error => next(error))
+}

@@ -1,29 +1,60 @@
-import config from 'config'
-import { object, string } from 'zod'
-import { readFile } from 'fs/promises'
-import { verify } from 'jsonwebtoken'
-import { promisify } from 'util'
-import type { VerifyOptions, Secret } from 'jsonwebtoken'
-import type { ZodObject, ZodRawShape } from 'zod/lib'
+import jwt from 'jsonwebtoken'
+import { z } from 'zod'
+import { promisify } from 'node:util'
+import { BadRequest } from 'http-errors'
+import type { VerifyOptions, Secret, JsonWebTokenError } from 'jsonwebtoken'
 
-import { issueAccessToken } from '../../common/authentication/authenticate'
-import { selectCredential } from '../../../periphery/persistence/repository/credential'
-import type { JsonWebToken, Payload } from '../../common/authentication/authenticate'
-import type { AccessToken, RefreshToken } from '../../../domain/authentication/token/model'
+import { env } from '~/common/environment'
+import { InvalidCredentialError } from '~/application/authentication/credential/login'
+import { issueAccessToken } from '~/application/common/authentication/authenticate'
+import { selectCredential } from '~/periphery/persistence/repository/credential'
+import type {
+  JsonWebToken,
+  Payload
+} from '~/application/common/authentication/authenticate'
+import type {
+  AccessToken,
+  RefreshToken
+} from '~/domain/authentication/token/model'
 
-export const decode = (token: JsonWebToken, options: VerifyOptions): Promise<Payload> =>
-  readFile(config.get('key.public.path'), 'utf8').then(secret =>
-    promisify<JsonWebToken, Secret, VerifyOptions, Payload>(verify)(token, secret, options)
-  )
+export class JsonWebTokenValidateError extends BadRequest {
+  readonly name = 'JsonWebTokenValidateError'
+}
+
+export const refreshTokenPayload = z.object({ sub: z.string().cuid() })
+
+export type RefreshTokenPayload = z.infer<typeof refreshTokenPayload>
+
+export const verify = promisify<
+  JsonWebToken,
+  Secret,
+  VerifyOptions | undefined,
+  Payload
+>(jwt.verify)
 
 export const validate =
-  <A extends ZodRawShape>(schema: ZodObject<A>) =>
-  (token: JsonWebToken, options: VerifyOptions) =>
-    decode(token, options).then(schema.parseAsync)
+  <A extends z.ZodRawShape>(schema: z.ZodObject<A>) =>
+  (token: JsonWebToken, options?: VerifyOptions) =>
+    verify(token, env.PRIVATE_KEY, options)
+      .then(decoded => schema.parseAsync(decoded))
+      .catch(({ message }: JsonWebTokenError) => {
+        throw new JsonWebTokenValidateError(message)
+      })
 
-export const refreshTokenPayload = object({ sub: string().uuid() })
+export const validateRefreshToken = validate(refreshTokenPayload)
 
-export const refresh = (token: RefreshToken): Promise<AccessToken> =>
-  validate(refreshTokenPayload)(token, { complete: false })
-    .then(({ sub }) => selectCredential({ id: sub }))
-    .then(issueAccessToken)
+export const refresh = async (token: RefreshToken): Promise<AccessToken> => {
+  const { sub } = await validateRefreshToken(token, {
+    algorithms: ['RS256'],
+    complete: false
+  })
+
+  const entity = await selectCredential({ id: sub })
+
+  if (!entity)
+    throw new InvalidCredentialError(
+      'Credentials not found for the provided token'
+    )
+
+  return await issueAccessToken(entity)
+}

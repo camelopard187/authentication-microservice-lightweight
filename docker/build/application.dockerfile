@@ -16,7 +16,10 @@ COPY source source
 
 RUN yarn install --frozen-lockfile \
   && yarn prisma generate \
-  && yarn build --outDir dist
+  && yarn tsc --outDir dist
+
+RUN npx tsconfig-replace-paths \
+  -p tsconfig.json -s source -o dist
 
 
 

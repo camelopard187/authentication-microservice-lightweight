@@ -1,10 +1,16 @@
-import type { ErrorRequestHandler } from 'express'
+import type { Request, Response, NextFunction } from 'express'
+import { HttpError, InternalServerError } from 'http-errors'
 
-export const object = (error: Error): Error => ({
-  name: error.name,
-  message: error.message,
-  cause: error.cause ? object(error.cause as Error) : error.cause
-})
+export const errorHandler = (
+  error: unknown,
+  _request: Request,
+  response: Response,
+  _next: NextFunction
+): void => {
+  const { name, message, statusCode } =
+    error instanceof HttpError
+      ? error
+      : new InternalServerError('Something went wrong')
 
-export const errorHandler: ErrorRequestHandler = (error, request, response, next) =>
-  response.status(error.status || 500).json(object(error))
+  response.status(statusCode).json({ name, message })
+}

@@ -10,4 +10,4 @@ export const insertCredential = (
 
 export const selectCredential = (
   where: Prisma.CredentialWhereInput
-): Promise<Entity<Credential>> => client.credential.findFirstOrThrow({ where })
+): Promise<Entity<Credential> | null> => client.credential.findFirst({ where })

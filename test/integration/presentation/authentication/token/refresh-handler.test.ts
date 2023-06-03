@@ -3,6 +3,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 
 import { client } from '~/periphery/persistence/database-client'
 import { application } from '~/periphery/presentation/application'
+import { issueRefreshToken } from '~/application/common/authentication/authenticate'
 import type {
   AccessToken,
   RefreshToken
@@ -52,6 +53,31 @@ describe.concurrent('Given a malformed refresh token', () => {
       expect(response.body).toEqual<Error>({
         name: 'JsonWebTokenValidateError',
         message: 'jwt malformed'
+      })
+    })
+  })
+})
+
+describe.concurrent('Given a mismatched refresh token', async () => {
+  const token: RefreshToken = await issueRefreshToken({
+    id: 'clifwg0oa000008lb63we3i59',
+    email: 'johnanderson@outlook.com',
+    password: 'KgsK9dBsFpT2mAFb1'
+  })
+
+  describe('When making a POST request to /v1/refresh', async () => {
+    const response = await request(application)
+      .post('/v1/refresh')
+      .set('Cookie', [`refresh-token=${token}`])
+
+    it('Then it should return a 400 status code', () => {
+      expect(response.status).toBe(400)
+    })
+
+    it('Then it should return a InvalidCredentialError', () => {
+      expect(response.body).toEqual<Error>({
+        name: 'InvalidCredentialError',
+        message: 'Credentials not found for the provided token'
       })
     })
   })

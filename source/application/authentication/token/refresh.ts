@@ -5,6 +5,7 @@ import { BadRequest } from 'http-errors'
 import type { VerifyOptions, Secret, JsonWebTokenError } from 'jsonwebtoken'
 
 import { env } from '~/common/environment'
+import { InvalidCredentialError } from '~/application/authentication/credential/login'
 import { issueAccessToken } from '~/application/common/authentication/authenticate'
 import { selectCredential } from '~/periphery/persistence/repository/credential'
 import type {
@@ -42,7 +43,18 @@ export const validate =
 
 export const validateRefreshToken = validate(refreshTokenPayload)
 
-export const refresh = (token: RefreshToken): Promise<AccessToken> =>
-  validateRefreshToken(token, { complete: false })
-    .then(({ sub }) => selectCredential({ id: sub }))
-    .then(issueAccessToken)
+export const refresh = async (token: RefreshToken): Promise<AccessToken> => {
+  const { sub } = await validateRefreshToken(token, {
+    algorithms: ['RS256'],
+    complete: false
+  })
+
+  const entity = await selectCredential({ id: sub })
+
+  if (!entity)
+    throw new InvalidCredentialError(
+      'Credentials not found for the provided token'
+    )
+
+  return await issueAccessToken(entity)
+}
